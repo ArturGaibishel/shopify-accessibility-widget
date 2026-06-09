@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>חנות הדגמה — בדיקת ווידג'ט נגישות</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ==============================
+       RESET & BASE
+    ============================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* html font-size is the rem base — the widget scales it to resize all text */
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Heebo', Arial, sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      direction: rtl;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: #2d6ef7; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ==============================
+       ANNOUNCEMENT BAR
+    ============================== */
+    .announcement-bar {
+      background: #1a1a2e;
+      color: #fff;
+      text-align: center;
+      padding: 10px 20px;
+      font-size: 0.875rem;
+      animation: slidein 0.5s ease;
+    }
+    @keyframes slidein {
+      from { opacity: 0; transform: translateY(-100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==============================
+       HEADER / NAV
+    ============================== */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e8ecf3;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 68px;
+      gap: 20px;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: #2d6ef7; }
+
+    nav { display: flex; gap: 4px; }
+    nav a {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: #333;
+      transition: background .15s, color .15s;
+    }
+    nav a:hover { background: #f0f4ff; color: #2d6ef7; text-decoration: none; }
+    nav a.active { color: #2d6ef7; font-weight: 700; }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-cart {
+      background: #2d6ef7;
+      color: #fff;
+      border: none;
+      padding: 9px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      transition: background .15s, transform .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-cart:hover { background: #1a53d8; transform: translateY(-1px); }
+
+    /* ==============================
+       HERO
+    ============================== */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d6ef7 100%);
+      color: #fff;
+      padding: 80px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 600px;
+      height: 600px;
+      background: rgba(255,255,255,.04);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,.04);
+      border-radius: 50%;
+      animation: float 4s ease-in-out infinite reverse;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.05); }
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+    .hero p { font-size: 1.125rem; opacity: .88; margin-bottom: 36px; }
+    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: #fff;
+      color: #2d6ef7;
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform .15s, box-shadow .15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.2); text-decoration: none; }
+    .btn-secondary {
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,.4);
+      padding: 14px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: background .15s;
+      display: inline-block;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,.25); text-decoration: none; }
+
+    /* ==============================
+       MARQUEE STRIP
+    ============================== */
+    .marquee-strip {
+      background: #f0f4ff;
+      padding: 12px 0;
+      overflow: hidden;
+      border-top: 1px solid #dce7ff;
+      border-bottom: 1px solid #dce7ff;
+    }
+    .marquee-inner {
+      display: flex;
+      gap: 60px;
+      animation: marquee 20s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-inner span { font-size: 14px; font-weight: 600; color: #2d6ef7; }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ==============================
+       SECTION COMMON
+    ============================== */
+    section { padding: 60px 24px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 40px; }
+    .section-header h2 { font-size: 2rem; font-weight: 800; color: #1a1a2e; }
+    .section-header p { color: #666; font-size: 1rem; margin-top: 8px; }
+
+    /* ==============================
+       CATEGORIES
+    ============================== */
+    .categories { background: #f9faff; }
+    .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .category-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px 16px;
+      text-align: center;
+      border: 2px solid #e8ecf3;
+      cursor: pointer;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .category-card:hover { border-color: #2d6ef7; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(45,110,247,.12); }
+    .category-icon { font-size: 36px; margin-bottom: 10px; }
+    .category-card h3 { font-size: 0.875rem; font-weight: 600; color: #1a1a2e; }
+    .category-card span { font-size: 0.75rem; color: #888; }
+
+    /* ==============================
+       PRODUCTS
+    ============================== */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+    .product-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e8ecf3;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,.1); }
+    .product-image {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .product-badge.new { background: #27ae60; }
+    .product-info { padding: 16px; }
+    .product-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: #1a1a2e; }
+    .product-info p { font-size: 0.8125rem; color: #666; margin-bottom: 12px; line-height: 1.5; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .price { font-size: 1.25rem; font-weight: 800; color: #2d6ef7; }
+    .price-old { font-size: 0.8125rem; color: #999; text-decoration: line-through; margin-right: 6px; }
+    .btn-add {
+      background: #2d6ef7;
+      color: #fff;
+      border: none;
+      padding: 9px 18px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s;
+    }
+    .btn-add:hover { background: #1a53d8; }
+    .stars { color: #f39c12; font-size: 14px; margin-bottom: 4px; }
+
+    /* Product colors */
+    .product-image.blue   { background: linear-gradient(135deg, #dce7ff, #a8c4ff); }
+    .product-image.green  { background: linear-gradient(135deg, #d5f5e3, #a9dfbf); }
+    .product-image.orange { background: linear-gradient(135deg, #fef9e7, #fad7a0); }
+    .product-image.pink   { background: linear-gradient(135deg, #fce4ec, #f8bbd9); }
+    .product-image.purple { background: linear-gradient(135deg, #e8d5f5, #c9a8e8); }
+    .product-image.red    { background: linear-gradient(135deg, #fee2e2, #fca5a5); }
+
+    /* ==============================
+       BANNER
+    ============================== */
+    .promo-banner {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: #fff;
+      border-radius: 20px;
+      padding: 48px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      animation: pulse-border 3s ease-in-out infinite;
+    }
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(238,90,36,.3); }
+      50%       { box-shadow: 0 0 0 12px rgba(238,90,36,0); }
+    }
+    .promo-banner h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 8px; }
+    .promo-banner p { font-size: 1rem; opacity: .9; }
+    .btn-white {
+      background: #fff;
+      color: #ee5a24;
+      padding: 14px 30px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      white-space: nowrap;
+      display: inline-block;
+      transition: transform .15s;
+    }
+    .btn-white:hover { transform: scale(1.04); text-decoration: none; }
+
+    /* ==============================
+       TESTIMONIALS
+    ============================== */
+    .testimonials { background: #f9faff; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .testimonial-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e8ecf3;
+    }
+    .testimonial-card .stars { font-size: 16px; margin-bottom: 12px; }
+    .testimonial-card p { font-size: 0.875rem; color: #444; line-height: 1.7; margin-bottom: 16px; font-style: italic; }
+    .reviewer { display: flex; align-items: center; gap: 12px; }
+    .reviewer-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .reviewer-name { font-weight: 700; font-size: 14px; }
+    .reviewer-date { font-size: 12px; color: #999; }
+
+    /* ==============================
+       NEWSLETTER
+    ============================== */
+    .newsletter { background: #1a1a2e; color: #fff; text-align: center; }
+    .newsletter h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 10px; }
+    .newsletter p { color: rgba(255,255,255,.72); margin-bottom: 28px; }
+    .newsletter-form { display: flex; max-width: 440px; margin: 0 auto; gap: 10px; }
+    .newsletter-form input {
+      flex: 1;
+      padding: 13px 18px;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .newsletter-form input::placeholder { color: rgba(255,255,255,.45); }
+    .newsletter-form input:focus { border-color: #2d6ef7; }
+    .newsletter-form button {
+      background: #2d6ef7;
+      color: #fff;
+      border: none;
+      padding: 13px 22px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .newsletter-form button:hover { background: #1a53d8; }
+
+    /* ==============================
+       FOOTER
+    ============================== */
+    footer {
+      background: #111;
+      color: rgba(255,255,255,.7);
+      padding: 48px 24px 24px;
+    }
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+    .footer-brand .logo { color: #fff; margin-bottom: 12px; }
+    .footer-brand p { font-size: 14px; line-height: 1.7; }
+    footer h4 { color: #fff; font-size: 0.9375rem; font-weight: 700; margin-bottom: 14px; }
+    footer ul { list-style: none; }
+    footer ul li { margin-bottom: 8px; }
+    footer ul li a { color: rgba(255,255,255,.65); font-size: 0.875rem; transition: color .15s; }
+    footer ul li a:hover { color: #fff; text-decoration: none; }
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .payment-icons { display: flex; gap: 8px; font-size: 22px; }
+
+    /* ==============================
+       DEMO NOTICE BADGE
+    ============================== */
+    .demo-badge {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff6b6b;
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      z-index: 99999;
+      box-shadow: 0 4px 16px rgba(255,107,107,.4);
+      white-space: nowrap;
+    }
+
+    /* ==============================
+       RESPONSIVE
+    ============================== */
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .hero { padding: 60px 20px; }
+      .promo-banner { text-align: center; justify-content: center; }
+      .newsletter-form { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- תגית דמו -->
+  <div class="demo-badge" aria-live="polite">🧪 אתר הדגמה — בדיקת ווידג'ט נגישות</div>
+
+  <!-- פס הודעה עליון -->
+  <div class="announcement-bar" role="banner">
+    🚚 משלוח חינם בכל הארץ בקנייה מעל ₪199 | קוד קופון: <strong>NAGISH10</strong>
+  </div>
+
+  <!-- ניווט עליון -->
+  <header>
+    <div class="header-inner">
+      <a href="#" class="logo" aria-label="עמוד הבית — חנות מודל">חנות <span>מודל</span></a>
+
+      <nav aria-label="ניווט ראשי">
+        <a href="#" class="active">בית</a>
+        <a href="#categories">קטגוריות</a>
+        <a href="#products">מוצרים</a>
+        <a href="#testimonials">ביקורות</a>
+        <a href="#newsletter">יצירת קשר</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="/pages/hagashat-negishut" style="font-size:13px;color:#666;">נגישות</a>
+        <button class="btn-cart" aria-label="סל קניות, 0 פריטים">
+          🛒 סל (0)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- תוכן ראשי -->
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <h1 id="hero-title">הסטייל שלך,<br>המחיר שמתאים לך</h1>
+        <p>אלפי מוצרים איכותיים עם משלוח מהיר ושירות לקוחות אנושי. הנגשנו את האתר לכולם.</p>
+        <div class="hero-btns">
+          <a href="#products" class="btn-primary">🛍️ לקנייה עכשיו</a>
+          <a href="#categories" class="btn-secondary">גלה קטגוריות</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- פס גולל -->
+    <div class="marquee-strip" aria-hidden="true">
+      <div class="marquee-inner">
+        <span>🚚 משלוח חינם מ-₪199</span>
+        <span>✅ החזרה חינם תוך 30 יום</span>
+        <span>🔒 תשלום מאובטח</span>
+        <span>⭐ 15,000+ לקוחות מרוצים</span>
+        <span>🎁 מתנה בכל הזמנה</span>
+        <span>🚚 משלוח חינם מ-₪199</span>
+        <span>✅ החזרה חינם תוך 30 יום</span>
+        <span>🔒 תשלום מאובטח</span>
+        <span>⭐ 15,000+ לקוחות מרוצים</span>
+        <span>🎁 מתנה בכל הזמנה</span>
+      </div>
+    </div>
+
+    <!-- קטגוריות -->
+    <section class="categories" id="categories" aria-labelledby="cat-title">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="cat-title">קנה לפי קטגוריה</h2>
+          <p>כל מה שאתה צריך, במקום אחד</p>
+        </div>
+        <div class="category-grid">
+          <div class="category-card" role="button" tabindex="0" aria-label="קטגוריה: אלקטרוניקה">
+            <div class="category-icon" aria-hidden="true">💻</div>
+            <h3>אלקטרוניקה</h3>
+            <span>248 מוצרים</span>
+          </div>
+          <div class="category-card" role="button" tabindex="0" aria-label="קטגוריה: אופנה">
+            <div class="category-icon" aria-hidden="true">👗</div>
+            <h3>אופנה</h3>
+            <span>1,204 מוצרים</span>
+          </div>
+          <div class="category-card" role="button" tabindex="0" aria-label="קטגוריה: בית וגן">
+            <div class="category-icon" aria-hidden="true">🏠</div>
+            <h3>בית וגן</h3>
+            <span>532 מוצרים</span>
+          </div>
+          <div class="category-card" role="button" tabindex="0" aria-label="קטגוריה: ספורט">
+            <div class="category-icon" aria-hidden="true">🏃</div>
+            <h3>ספורט</h3>
+            <span>389 מוצרים</span>
+          </div>
+          <div class="category-card" role="button" tabindex="0" aria-label="קטגוריה: יופי">
+            <div class="category-icon" aria-hidden="true">💄</div>
+            <h3>יופי</h3>
+            <span>176 מוצרים</span>
+          </div>
+          <div class="category-card" role="button" tabindex="0" aria-label="קטגוריה: ילדים">
+            <div class="category-icon" aria-hidden="true">🧸</div>
+            <h3>ילדים</h3>
+            <span>421 מוצרים</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- מוצרים מובחרים -->
+    <section id="products" aria-labelledby="products-title">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="products-title">מוצרים מובחרים</h2>
+          <p>הנמכרים ביותר השבוע</p>
+        </div>
+        <div class="products-grid">
+
+          <article class="product-card">
+            <div class="product-image blue" aria-label="תמונת מוצר: אוזניות בלוטוס">
+              <span aria-hidden="true">🎧</span>
+              <span class="product-badge">-20%</span>
+            </div>
+            <div class="product-info">
+              <div class="stars" aria-label="דירוג: 5 כוכבים">★★★★★</div>
+              <h3>אוזניות בלוטות' פרו</h3>
+              <p>ביטול רעשים אקטיבי, 30 שעות סוללה, חיבור לשני מכשירים בו-זמנית.</p>
+              <div class="product-footer">
+                <div>
+                  <span class="price-old">₪499</span>
+                  <span class="price">₪399</span>
+                </div>
+                <button class="btn-add" aria-label="הוסף לסל: אוזניות בלוטות' פרו">הוסף לסל</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card">
+            <div class="product-image green" aria-label="תמונת מוצר: נעלי ריצה">
+              <span aria-hidden="true">👟</span>
+              <span class="product-badge new">חדש</span>
+            </div>
+            <div class="product-info">
+              <div class="stars" aria-label="דירוג: 4 כוכבים">★★★★☆</div>
+              <h3>נעלי ריצה AirMax</h3>
+              <p>קלות במיוחד, כרית אוויר ייחודית, מתאים לריצות ארוכות ולשימוש יומיומי.</p>
+              <div class="product-footer">
+                <span class="price">₪289</span>
+                <button class="btn-add" aria-label="הוסף לסל: נעלי ריצה AirMax">הוסף לסל</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card">
+            <div class="product-image orange" aria-label="תמונת מוצר: שעון חכם">
+              <span aria-hidden="true">⌚</span>
+              <span class="product-badge">-15%</span>
+            </div>
+            <div class="product-info">
+              <div class="stars" aria-label="דירוג: 5 כוכבים">★★★★★</div>
+              <h3>שעון חכם Series X</h3>
+              <p>מדידת דופק, GPS, התראות חכמות, עמידות במים. מסך AMOLED בהיר.</p>
+              <div class="product-footer">
+                <div>
+                  <span class="price-old">₪799</span>
+                  <span class="price">₪679</span>
+                </div>
+                <button class="btn-add" aria-label="הוסף לסל: שעון חכם Series X">הוסף לסל</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card">
+            <div class="product-image pink" aria-label="תמונת מוצר: תיק עור">
+              <span aria-hidden="true">👜</span>
+            </div>
+            <div class="product-info">
+              <div class="stars" aria-label="דירוג: 4.5 כוכבים">★★★★½</div>
+              <h3>תיק עור איטלקי</h3>
+              <p>עור טבעי אמיתי, עמיד, רוחב 32 ס"מ. מגיע ב-6 צבעים. מתנה מושלמת.</p>
+              <div class="product-footer">
+                <span class="price">₪459</span>
+                <button class="btn-add" aria-label="הוסף לסל: תיק עור איטלקי">הוסף לסל</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card">
+            <div class="product-image purple" aria-label="תמונת מוצר: מנורה חכמה">
+              <span aria-hidden="true">💡</span>
+              <span class="product-badge new">חדש</span>
+            </div>
+            <div class="product-info">
+              <div class="stars" aria-label="דירוג: 4 כוכבים">★★★★☆</div>
+              <h3>מנורת LED חכמה</h3>
+              <p>שליטה דרך האפליקציה, 16 מיליון צבעים, תואמת Alexa ו-Google Home.</p>
+              <div class="product-footer">
+                <span class="price">₪149</span>
+                <button class="btn-add" aria-label="הוסף לסל: מנורת LED חכמה">הוסף לסל</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card">
+            <div class="product-image red" aria-label="תמונת מוצר: כוס תרמית">
+              <span aria-hidden="true">☕</span>
+            </div>
+            <div class="product-info">
+              <div class="stars" aria-label="דירוג: 5 כוכבים">★★★★★</div>
+              <h3>כוס תרמית פרמיום</h3>
+              <p>שומרת חמים 12 שעות, קרים 24 שעות. נירוסטה, ללא BPA. 500 מ"ל.</p>
+              <div class="product-footer">
+                <span class="price">₪89</span>
+                <button class="btn-add" aria-label="הוסף לסל: כוס תרמית פרמיום">הוסף לסל</button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- באנר מבצע -->
+    <section aria-label="מבצע מיוחד">
+      <div class="container">
+        <div class="promo-banner">
+          <div>
+            <h2>🔥 מבצע סוף עונה — עד 50% הנחה</h2>
+            <p>רק עד סוף השבוע! אל תפספס מאות מוצרים במחירים שלא ראית.</p>
+          </div>
+          <a href="#products" class="btn-white">לכל המבצעים</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ביקורות -->
+    <section class="testimonials" id="testimonials" aria-labelledby="reviews-title">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="reviews-title">מה אומרים הלקוחות</h2>
+          <p>4.9 ⭐ ממוצע מ-15,000+ ביקורות</p>
+        </div>
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="stars" aria-label="דירוג: 5 כוכבים">★★★★★</div>
+            <p>"קיבלתי את הזמנה בתוך יומיים! האריזה מושלמת והמוצר בדיוק כמו בתמונה. בהחלט חוזרת!"</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar" style="background:#2d6ef7" aria-hidden="true">מ</div>
+              <div>
+                <div class="reviewer-name">מיכל כ.</div>
+                <div class="reviewer-date">לפני 3 ימים</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="stars" aria-label="דירוג: 5 כוכבים">★★★★★</div>
+            <p>"שירות לקוחות פנטסטי. הייתה לי בעיה קטנה עם ההזמנה ופתרו אותה תוך שעה. ממליץ בחום!"</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar" style="background:#27ae60" aria-hidden="true">ד</div>
+              <div>
+                <div class="reviewer-name">דוד ל.</div>
+                <div class="reviewer-date">לפני שבוע</div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <div class="stars" aria-label="דירוג: 4 כוכבים">★★★★☆</div>
+            <p>"איכות המוצרים מעולה. הייתי קצת מפוקפקת לקנות אונליין אבל הופתעתי לטובה. כל הכבוד!"</p>
+            <div class="reviewer">
+              <div class="reviewer-avatar" style="background:#e74c3c" aria-hidden="true">ש</div>
+              <div>
+                <div class="reviewer-name">שרה נ.</div>
+                <div class="reviewer-date">לפני 2 שבועות</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ניוזלטר -->
+    <section class="newsletter" id="newsletter" aria-labelledby="newsletter-title">
+      <div class="container">
+        <h2 id="newsletter-title">הצטרפו לקהילה שלנו</h2>
+        <p>קבלו עדכונים על מבצעים, מוצרים חדשים וטיפים שימושיים</p>
+        <form class="newsletter-form" aria-label="הרשמה לניוזלטר" onsubmit="return false;">
+          <label for="email-input" class="sr-only">כתובת אימייל</label>
+          <input
+            type="email"
+            id="email-input"
+            placeholder="הכנס את כתובת האימייל שלך"
+            autocomplete="email"
+            aria-required="true"
+          >
+          <button type="submit">הרשמה</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- פוטר -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">חנות <span style="color:#2d6ef7">מודל</span></div>
+        <p>חנות אונליין ישראלית מובילה מאז 2018. אנחנו מחויבים לאיכות, שירות ונגישות לכולם.</p>
+      </div>
+      <div>
+        <h4>קישורים</h4>
+        <ul>
+          <li><a href="#">אודות</a></li>
+          <li><a href="#">בלוג</a></li>
+          <li><a href="#">קריירה</a></li>
+          <li><a href="#">פרסום</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>תמיכה</h4>
+        <ul>
+          <li><a href="#">שאלות נפוצות</a></li>
+          <li><a href="#">מדיניות החזרות</a></li>
+          <li><a href="#">מעקב הזמנה</a></li>
+          <li><a href="/pages/hagashat-negishut">הצהרת נגישות</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>משפטי</h4>
+        <ul>
+          <li><a href="#">תנאי שימוש</a></li>
+          <li><a href="#">פרטיות</a></li>
+          <li><a href="#">עוגיות</a></li>
+          <li><a href="#">GDPR</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 חנות מודל. כל הזכויות שמורות.</span>
+      <div class="payment-icons" aria-label="אמצעי תשלום מקובלים">
+        <span title="Visa" aria-label="Visa">💳</span>
+        <span title="Mastercard" aria-label="Mastercard">💳</span>
+        <span title="PayPal" aria-label="PayPal">🅿️</span>
+        <span title="Apple Pay" aria-label="Apple Pay">🍎</span>
+        <span title="Google Pay" aria-label="Google Pay">🟢</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- sr-only utility -->
+  <style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}</style>
+
+  <!-- ווידג'ט נגישות -->
+  <script src="accessibility-widget.js"></script>
+
+</body>
+</html>
